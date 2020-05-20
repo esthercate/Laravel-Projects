@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Corona;
 
 class CoronaController extends Controller
 {
@@ -23,7 +24,7 @@ class CoronaController extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -34,7 +35,15 @@ class CoronaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //function to validate data
+        $validatedData = $request->validate([
+            'country_name' =>'required|max:255',
+            'symptoms' => 'required',
+            'cases' => 'required|numeric',
+
+        ]);
+        $show = Corona::create($validatedData);
+        return redirect('/coronas')->with('success', 'Corona case is successfully saved');
     }
 
     /**
