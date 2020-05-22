@@ -14,7 +14,8 @@ class CoronaController extends Controller
      */
     public function index()
     {
-        //
+        $coronacases = Corona::all();
+        return view('index', compact('coronacases'));
     }
 
     /**
@@ -36,13 +37,17 @@ class CoronaController extends Controller
     public function store(Request $request)
     {
         //function to validate data
-        $validatedData = $request->validate([
+        $validatedData = $request->validate(
+            [
             'country_name' =>'required|max:255',
             'symptoms' => 'required',
             'cases' => 'required|numeric',
 
-        ]);
+        ]
+    );
+
         $show = Corona::create($validatedData);
+       
         return redirect('/coronas')->with('success', 'Corona case is successfully saved');
     }
 
@@ -65,7 +70,8 @@ class CoronaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $coronacase = corona::findOrFail($id);
+        return view('edit', compact('coronacase'));
     }
 
     /**
@@ -77,7 +83,14 @@ class CoronaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'country_name' =>'required|max:255',
+            'symptoms' => 'required',
+            'cases' => 'required|numeric',
+        ]);
+        corona::whereId($id)->update($validatedData);
+        
+        return redirect('/coronas')->with('success', 'Corona Case Data is successfully updated');
     }
 
     /**
@@ -88,6 +101,9 @@ class CoronaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $coronacase = corona::findOrFail($id);
+        $coronacase->delete();
+
+        return redirect('/coronas')->with('success', 'Corona Data is successfully deleted');
     }
 }
